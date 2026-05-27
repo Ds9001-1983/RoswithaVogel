@@ -11,14 +11,24 @@ for (const [path, mod] of Object.entries(galleryModules)) {
   lookup[path.split("/").pop()!] = mod.default;
 }
 
+// Span je Werk anhand des Seitenverhaeltnisses bestimmen — gibt den Bento-Mix
+const computeSpan = (w: number, h: number, idx: number): string => {
+  const r = w / h;
+  // Jeder 7. wird zur "Hero"-Tile (2x2)
+  if (idx % 7 === 0) return "md:col-span-2 md:row-span-2";
+  if (r >= 1.6) return "md:col-span-2 md:row-span-1"; // breites Querformat
+  if (r <= 0.65) return "md:col-span-1 md:row-span-2"; // klassisches Hochformat
+  return "md:col-span-1 md:row-span-1"; // 1x1
+};
+
 const items = await Promise.all(
   galleryData
     .map((g) => ({ ...g, src: lookup[g.file] }))
     .filter((g) => !!g.src)
-    .map(async (g) => {
+    .map(async (g, i) => {
       const optimized = await getImage({
         src: g.src!,
-        widths: [320, 480, 640],
+        widths: [320, 480, 720, 1080],
         formats: ["avif", "webp", "jpg"],
       });
       const full = await getImage({
@@ -26,14 +36,17 @@ const items = await Promise.all(
         format: "webp",
         quality: 88,
       });
+      const w = g.src!.width;
+      const h = g.src!.height;
       return {
         ...g,
         thumbSrc: optimized.src,
         thumbSrcset: optimized.srcSet.attribute,
         fullSrc: full.src,
-        width: g.src!.width,
-        height: g.src!.height,
-      };
+        width: w,
+        height: h,
+        span: computeSpan(w, h, i),
+      } as const;
     })
 );
 
@@ -42,139 +55,166 @@ const priceLabel = (p: number | null) =>
 ---
 
 <!--
-  Pattern aus der 21st.dev-Demo (ravikatiyar/circular-gallery):
-    Aussen: hohes Container-Element (500vh)
-    Innen:  sticky h-screen Buehne
-    Galerie rotiert ueber den globalen ScrollY der Page.
+  Pattern: 21st.dev / ravikatiyar / bento-gallery
+    - Horizontale Drag-Bento-Galerie
+    - Asymmetrische Tiles via col-span / row-span
+    - Hover blendet Gradient-Overlay + Titel/Beschreibung ein
+    - Click oeffnet Lightbox (statt Framer-Motion-Modal → PhotoSwipe)
 -->
-<section id="galerie" class="cg-section" aria-label="Galerie der Acryl-Werke">
-  <div class="cg-sticky">
-    <div class="cg-title">
-      <p class="font-display italic text-[var(--color-accent)] text-base sm:text-lg mb-2 sm:mb-3" style="letter-spacing:0.02em;">Die Künstlerin</p>
-      <h2 class="font-display font-medium text-[clamp(30px,5vw,68px)] leading-[1.05]" style="letter-spacing:-0.015em;">
-        Acryl. Großformatig.<br class="sm:hidden"/> Aus dem Pfälzer Wald.
-      </h2>
-      <p class="cg-hint mt-3 sm:mt-4 text-[var(--color-muted)] text-[11px] sm:text-xs uppercase tracking-[0.22em]">
-        Scrollen · die Galerie dreht sich
-      </p>
+<section
+  id="galerie"
+  class="relative w-full overflow-hidden py-16 sm:py-24"
+  aria-label="Galerie der Acryl-Werke"
+>
+  <div class="container mx-auto px-4 text-center reveal">
+    <p class="font-display italic text-[var(--color-accent)] text-base sm:text-lg mb-3" style="letter-spacing:0.02em;">Die Künstlerin</p>
+    <h2 class="font-display font-medium tracking-tight text-[clamp(32px,5vw,64px)] leading-[1.05]" style="letter-spacing:-0.015em;">
+      Acryl. Großformatig. Aus dem Pfälzer Wald.
+    </h2>
+    <p class="mx-auto mt-4 max-w-2xl text-[15px] sm:text-lg text-[var(--color-ink-soft)]">
+      Eine wachsende Sammlung großformatiger Werke. Ziehen, scrollen, klicken —
+      jedes Werk öffnet sich in der Großansicht. Bei Interesse Kontakt über
+      Facebook oder per Mail.
+    </p>
+  </div>
+
+  <div
+    class="bento-drag relative mt-10 sm:mt-12 w-full cursor-grab active:cursor-grabbing select-none"
+    id="bento-drag"
+    role="region"
+    aria-label="Acryl-Werke (horizontal scrollbar)"
+  >
+    <div
+      class="bento-grid grid auto-cols-[minmax(11rem,1fr)] sm:auto-cols-[minmax(13rem,1fr)] md:auto-cols-[minmax(15rem,1fr)] grid-flow-col grid-rows-2 gap-3 sm:gap-4 px-4 sm:px-6 md:px-8"
+      id="bento-grid"
+    >
+      {items.map((item) => (
+        <a
+          href={item.fullSrc}
+          data-pswp-width={item.width}
+          data-pswp-height={item.height}
+          data-title={item.title}
+          data-dims={item.dims}
+          data-price={priceLabel(item.price)}
+          target="_blank"
+          rel="noopener"
+          aria-label={`${item.title} — ${item.dims} — Großansicht öffnen`}
+          class={`bento-item ${item.span} group relative flex h-full min-h-[15rem] w-full min-w-[11rem] sm:min-w-[13rem] md:min-w-[15rem] cursor-pointer items-end overflow-hidden rounded-xl border border-[var(--color-line)] bg-[var(--color-paper-soft)] shadow-sm transition-shadow duration-300 ease-in-out hover:shadow-lg`}
+        >
+          <img
+            src={item.thumbSrc}
+            srcset={item.thumbSrcset}
+            sizes="(min-width: 1024px) 360px, (min-width: 640px) 280px, 200px"
+            alt={`${item.title} — ${item.dims}`}
+            loading="lazy"
+            decoding="async"
+            width={item.width}
+            height={item.height}
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            draggable={false}
+          />
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+          <div class="bento-caption relative z-10 p-4 sm:p-5 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+            <h3 class="font-display text-lg sm:text-xl font-medium text-white" style="letter-spacing:-0.005em;">{item.title}</h3>
+            <p class="mt-1 text-xs sm:text-sm italic text-white/85">{item.dims}</p>
+            <p class="mt-2 text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/75 font-variant-numeric tabular-nums">
+              {priceLabel(item.price)}
+            </p>
+          </div>
+        </a>
+      ))}
     </div>
 
-    <div class="cg-stage" id="cg-stage" role="region" aria-label="Acryl-Werke, dreidimensional rotierend">
-      <div class="cg-rotor" id="cg-rotor">
-        {items.map((item) => (
-          <a
-            class="cg-card"
-            href={item.fullSrc}
-            data-pswp-width={item.width}
-            data-pswp-height={item.height}
-            data-title={item.title}
-            data-dims={item.dims}
-            data-price={priceLabel(item.price)}
-            target="_blank"
-            rel="noopener"
-            aria-label={`${item.title} — ${item.dims} — Großansicht öffnen`}
-          >
-            <img
-              src={item.thumbSrc}
-              srcset={item.thumbSrcset}
-              sizes="(min-width: 1024px) 300px, (min-width: 640px) 240px, 180px"
-              alt={`${item.title} — ${item.dims}`}
-              loading="lazy"
-              decoding="async"
-              width={item.width}
-              height={item.height}
-            />
-            <div class="cg-caption">
-              <strong>{item.title}</strong>
-              <em class="dims">{item.dims}</em>
-              <p class="price">{priceLabel(item.price)}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
+    <p class="cg-hint mt-6 sm:mt-8 text-center text-[var(--color-muted)] text-[11px] sm:text-xs uppercase tracking-[0.22em]">
+      Ziehen oder Wischen · Klick öffnet die Großansicht
+    </p>
   </div>
 </section>
 
 <script>
-  // 1:1 Port der React-Komponente in Vanilla-TS — selbe Mechanik:
-  // - scrollY / scrollableHeight => Rotation 0..360
-  // - Auto-Rotate (autoRotateSpeed 0.02 °/frame), pausiert waehrend Scroll
-  // - opacity = max(0.3, 1 - relativeAngle/180)
+  // Drag-to-scroll auf dem horizontalen Container (ersetzt Framer-Motion drag="x")
+  const drag = document.getElementById("bento-drag");
+  if (drag) {
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+    let movedDist = 0;
 
-  const stage = document.getElementById("cg-stage");
-  const rotor = document.getElementById("cg-rotor");
-  if (stage && rotor) {
-    const cards = Array.from(stage.querySelectorAll<HTMLElement>(".cg-card"));
-    const N = cards.length;
-    const anglePerItem = 360 / N;
-    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const autoRotateSpeed = 0.02;
-
-    const radiusFromVar = () => {
-      const v = getComputedStyle(stage).getPropertyValue("--cg-radius").trim();
-      return parseFloat(v) || 600;
-    };
-
-    const placeCards = () => {
-      const r = radiusFromVar();
-      cards.forEach((c, i) => {
-        c.style.transform = `rotateY(${i * anglePerItem}deg) translateZ(${r}px)`;
-      });
-    };
-    placeCards();
-    window.addEventListener("resize", placeCards);
-
-    let rotation = 0;
-    let isScrolling = false;
-    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const applyRotation = () => {
-      rotor.style.transform = `rotateY(${rotation}deg)`;
-      const total = ((rotation % 360) + 360) % 360;
-      cards.forEach((c, i) => {
-        const itemAngle = i * anglePerItem;
-        const rel = (itemAngle + total) % 360;
-        const norm = Math.abs(rel > 180 ? 360 - rel : rel);
-        const opacity = Math.max(0.3, 1 - norm / 180);
-        c.style.opacity = String(opacity);
-        c.style.pointerEvents = opacity < 0.5 ? "none" : "auto";
-      });
-    };
-
-    const onScroll = () => {
-      isScrolling = true;
-      if (scrollTimer) clearTimeout(scrollTimer);
-      const scrollable =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
-      rotation = progress * 360;
-      applyRotation();
-      scrollTimer = setTimeout(() => {
-        isScrolling = false;
-      }, 150);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    const tick = () => {
-      if (!isScrolling && !reducedMotion) {
-        rotation += autoRotateSpeed;
-        applyRotation();
+    drag.addEventListener("pointerdown", (e) => {
+      // Linke Maustaste / Touch
+      if (e.button !== undefined && e.button !== 0) return;
+      isDown = true;
+      movedDist = 0;
+      startX = e.clientX;
+      startScroll = drag.scrollLeft;
+      drag.setPointerCapture(e.pointerId);
+      drag.classList.add("is-dragging");
+    });
+    drag.addEventListener("pointermove", (e) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      movedDist = Math.max(movedDist, Math.abs(dx));
+      drag.scrollLeft = startScroll - dx;
+    });
+    const endDrag = (e: PointerEvent) => {
+      if (!isDown) return;
+      isDown = false;
+      drag.classList.remove("is-dragging");
+      try {
+        drag.releasePointerCapture(e.pointerId);
+      } catch {}
+      // Wenn der Cursor signifikant bewegt wurde → naechsten Klick swallowen
+      if (movedDist > 6) {
+        const swallow = (ev: Event) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.removeEventListener("click", swallow, true);
+        };
+        window.addEventListener("click", swallow, true);
       }
-      requestAnimationFrame(tick);
     };
-    requestAnimationFrame(tick);
+    drag.addEventListener("pointerup", endDrag);
+    drag.addEventListener("pointercancel", endDrag);
 
-    // initial sync
-    onScroll();
+    // Mausrad → horizontal scrollen
+    drag.addEventListener(
+      "wheel",
+      (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          drag.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
   }
 
-  // PhotoSwipe-Lightbox bleibt erhalten (Click → Grossansicht)
-  if (document.querySelector(".cg-card")) {
+  // Staggered Reveal on-scroll fuer die Bento-Tiles
+  const grid = document.getElementById("bento-grid");
+  if (grid && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const tiles = Array.from(grid.querySelectorAll<HTMLElement>(".bento-item"));
+    tiles.forEach((t) => t.classList.add("bento-pre"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const idx = tiles.indexOf(entry.target as HTMLElement);
+          if (idx === -1) return;
+          setTimeout(() => entry.target.classList.add("bento-in"), Math.min(idx, 12) * 60);
+          io.unobserve(entry.target);
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.2 }
+    );
+    tiles.forEach((t) => io.observe(t));
+  }
+
+  // PhotoSwipe Lightbox (ersetzt das Framer-Modal aus der Demo)
+  if (document.querySelector(".bento-item")) {
     import("photoswipe/lightbox").then(({ default: PhotoSwipeLightbox }) => {
       const lightbox = new PhotoSwipeLightbox({
-        gallery: "#cg-stage",
-        children: "a.cg-card",
+        gallery: "#bento-grid",
+        children: "a.bento-item",
         pswpModule: () => import("photoswipe"),
         bgOpacity: 0.95,
         showHideAnimationType: "fade",
