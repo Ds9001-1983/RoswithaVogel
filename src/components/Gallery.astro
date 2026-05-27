@@ -1,0 +1,149 @@
+---
+import { Image, getImage } from "astro:assets";
+import galleryData from "../data/gallery.json";
+
+const galleryModules = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/gallery/*.jpg",
+  { eager: true }
+);
+const lookup: Record<string, ImageMetadata> = {};
+for (const [path, mod] of Object.entries(galleryModules)) {
+  lookup[path.split("/").pop()!] = mod.default;
+}
+
+const items = await Promise.all(
+  galleryData
+    .map((g) => ({ ...g, src: lookup[g.file] }))
+    .filter((g) => !!g.src)
+    .map(async (g) => {
+      const optimized = await getImage({
+        src: g.src!,
+        widths: [480, 720, 1080],
+        formats: ["avif", "webp", "jpg"],
+      });
+      const full = await getImage({
+        src: g.src!,
+        format: "webp",
+        quality: 85,
+      });
+      return {
+        ...g,
+        thumbSrc: optimized.src,
+        thumbSrcset: optimized.srcSet.attribute,
+        fullSrc: full.src,
+        width: g.src!.width,
+        height: g.src!.height,
+      };
+    })
+);
+
+const priceLabel = (p: number | null) =>
+  p == null ? "Preis auf Anfrage" : `${p} €`;
+---
+
+<section id="galerie" class="px-6 py-32 sm:py-40">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="font-display italic text-[var(--color-accent)] text-lg mb-3" style="letter-spacing:0.02em;">Die Künstlerin</p>
+      <h2 class="font-display font-medium text-[clamp(40px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
+        Acryl. Großformatig.<br class="sm:hidden"/> Aus dem Pfälzer Wald.
+      </h2>
+      <p class="mt-4 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto">
+        Eine Auswahl der aktuell verfügbaren Werke. Bei Interesse an einem
+        bestimmten Bild bitte über Facebook oder per Mail Kontakt aufnehmen —
+        alle Preise inklusive Versand innerhalb Deutschlands.
+      </p>
+    </div>
+
+    <ul class="masonry list-none p-0 m-0" id="gallery-list">
+      {items.map((item, i) => (
+        <li>
+          <a
+            class="tile reveal"
+            href={item.fullSrc}
+            data-pswp-width={item.width}
+            data-pswp-height={item.height}
+            data-title={item.title}
+            data-dims={item.dims}
+            data-price={priceLabel(item.price)}
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src={item.thumbSrc}
+              srcset={item.thumbSrcset}
+              sizes="(min-width: 1400px) 320px, (min-width: 960px) 30vw, (min-width: 640px) 45vw, 92vw"
+              alt={`${item.title} — ${item.dims}`}
+              loading={i < 4 ? "eager" : "lazy"}
+              decoding="async"
+              width={item.width}
+              height={item.height}
+            />
+            <div class="caption">
+              <strong>{item.title}</strong>
+              {item.dims} · {priceLabel(item.price)}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  import("photoswipe/lightbox").then(({ default: PhotoSwipeLightbox }) => {
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: "#gallery-list",
+      children: "a.tile",
+      pswpModule: () => import("photoswipe"),
+      bgOpacity: 0.95,
+      showHideAnimationType: "fade",
+    });
+    lightbox.on("uiRegister", () => {
+      lightbox.pswp?.ui?.registerElement({
+        name: "custom-caption",
+        order: 9,
+        isButton: false,
+        appendTo: "root",
+        html: '<div class="pswp__custom-caption"></div>',
+        onInit: (el) => {
+          lightbox.pswp?.on("change", () => {
+            const slide = lightbox.pswp?.currSlide?.data.element as HTMLAnchorElement;
+            if (!slide) return;
+            const title = slide.dataset.title ?? "";
+            const dims = slide.dataset.dims ?? "";
+            const price = slide.dataset.price ?? "";
+            el.innerHTML = `<strong>${title}</strong><br/>${dims} · ${price}`;
+          });
+        },
+      });
+    });
+    lightbox.init();
+  });
+
+  // Inject minimal PhotoSwipe captions CSS (we keep it small)
+  const css = `
+    .pswp__custom-caption {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #f6f2ea;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      background: rgba(10,8,7,0.55);
+      backdrop-filter: blur(8px);
+      padding: 10px 18px;
+      border-radius: 999px;
+      max-width: min(90vw, 600px);
+      text-align: center;
+    }
+    .pswp__custom-caption strong {
+      font-size: 19px; font-weight: 600;
+    }
+  `;
+  const style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
+</script>

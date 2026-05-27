@@ -1,0 +1,98 @@
+---
+const links = [
+  { href: "#bio",     label: "Bio" },
+  { href: "#video",   label: "Im Gespräch" },
+  { href: "#buecher", label: "Bücher" },
+  { href: "#galerie", label: "Galerie" },
+];
+---
+
+<nav class="island" data-state="idle" aria-label="Hauptnavigation">
+  <a href="#top" class="font-display" style="font-weight:600;letter-spacing:0.02em;padding-right:14px;border-right:1px solid var(--color-line);margin-right:6px;">
+    Roswitha Vogel
+  </a>
+  <div class="nav-links">
+    {links.map((l) => (
+      <a href={l.href} data-link>
+        {l.label}
+        <span class="dot" aria-hidden="true"></span>
+      </a>
+    ))}
+  </div>
+  <button class="island-mobile-toggle" aria-controls="island-sheet" aria-expanded="false">
+    Menü
+  </button>
+</nav>
+
+<div class="island-sheet" id="island-sheet" data-open="false" aria-hidden="true">
+  <ul>
+    {links.map((l) => <li><a href={l.href} data-sheet-link>{l.label}</a></li>)}
+  </ul>
+</div>
+
+<script>
+  import { animate } from "motion";
+
+  const island = document.querySelector<HTMLElement>(".island")!;
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".island a[data-link]"));
+  const sheet = document.getElementById("island-sheet")!;
+  const toggle = document.querySelector<HTMLButtonElement>(".island-mobile-toggle")!;
+
+  // Scroll → idle / scrolled
+  const onScroll = () => {
+    const next = window.scrollY > window.innerHeight * 0.6 ? "scrolled" : "idle";
+    if (island.dataset.state !== next) {
+      island.dataset.state = next;
+      animate(
+        island,
+        { scale: next === "scrolled" ? [1.02, 1] : [0.98, 1] },
+        { duration: 0.45, easing: [0.22, 0.61, 0.36, 1] }
+      );
+    }
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Active section via IO
+  const sections = links
+    .map((a) => document.querySelector<HTMLElement>(a.getAttribute("href")!))
+    .filter((el): el is HTMLElement => !!el);
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id = "#" + entry.target.id;
+        links.forEach((a) =>
+          a.toggleAttribute("aria-current", a.getAttribute("href") === id)
+        );
+      });
+    },
+    { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+  );
+  sections.forEach((s) => io.observe(s));
+
+  // Hover-Mikro-Animation (nur Pointer)
+  if (matchMedia("(hover: hover)").matches) {
+    links.forEach((a) => {
+      a.addEventListener("pointerenter", () =>
+        animate(a, { letterSpacing: ["0em", "0.01em"] }, { duration: 0.22 })
+      );
+    });
+  }
+
+  // Mobile-Sheet
+  const setSheet = (open: boolean) => {
+    sheet.dataset.open = String(open);
+    sheet.setAttribute("aria-hidden", String(!open));
+    toggle.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+  toggle.addEventListener("click", () => setSheet(sheet.dataset.open !== "true"));
+  sheet.querySelectorAll("a[data-sheet-link]").forEach((a) =>
+    a.addEventListener("click", () => setSheet(false))
+  );
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sheet.dataset.open === "true") setSheet(false);
+  });
+</script>

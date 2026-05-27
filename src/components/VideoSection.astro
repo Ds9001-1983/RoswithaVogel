@@ -1,0 +1,72 @@
+---
+const videoId = "BAmkedFZWL0";
+---
+
+<section id="video" class="px-6 py-32 sm:py-40">
+  <div class="max-w-[1100px] mx-auto">
+    <div class="text-center mb-14 reveal">
+      <p class="font-display italic text-[var(--color-accent)] text-lg mb-3" style="letter-spacing:0.02em;">Im Gespräch</p>
+      <h2 class="font-display font-medium text-[clamp(40px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
+        Begegnung im Bewegtbild.
+      </h2>
+      <p class="mt-4 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto">
+        Ein Video-Interview mit Roswitha Vogel — über Hochsensibilität, das
+        Schreiben in der Pfalz und den Mut, mit über siebzig eine Trilogie
+        abzuschließen.
+      </p>
+    </div>
+
+    <div class="reveal">
+      <lite-youtube
+        videoid={videoId}
+        playlabel="Video abspielen: Roswitha Vogel im Gespräch"
+        params="rel=0&modestbranding=1"
+        style={`background-image: url("https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg");`}
+      >
+        <button class="lty-playbtn" aria-label="Video abspielen"></button>
+      </lite-youtube>
+      <p class="text-sm text-[var(--color-muted)] mt-4 italic">
+        Mit dem Abspielen werden Inhalte von YouTube (Google&nbsp;Ireland&nbsp;Ltd.) geladen.
+        Details siehe <a href="/datenschutz" class="underline hover:text-[var(--color-accent)]">Datenschutz</a>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // lite-youtube-embed inline (Paul Irish, MIT)
+  class LiteYTEmbed extends HTMLElement {
+    connectedCallback() {
+      this.videoId = encodeURIComponent(this.getAttribute("videoid") || "");
+      this.addEventListener("pointerover", LiteYTEmbed.warmConnections, { once: true });
+      this.addEventListener("click", () => this.addIframe());
+    }
+    static warmConnections() {
+      if (LiteYTEmbed.preconnected) return;
+      const add = (href: string) => {
+        const l = document.createElement("link");
+        l.rel = "preconnect";
+        l.href = href;
+        document.head.append(l);
+      };
+      add("https://www.youtube-nocookie.com");
+      add("https://www.google.com");
+      LiteYTEmbed.preconnected = true;
+    }
+    addIframe() {
+      if (this.classList.contains("lyt-activated")) return;
+      const params = this.getAttribute("params") || "";
+      const iframeHTML = `
+        <iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          src="https://www.youtube-nocookie.com/embed/${this.videoId}?autoplay=1&${params}"></iframe>`;
+      this.insertAdjacentHTML("beforeend", iframeHTML);
+      this.classList.add("lyt-activated");
+    }
+    static preconnected = false;
+    videoId = "";
+  }
+  if (!customElements.get("lite-youtube")) {
+    customElements.define("lite-youtube", LiteYTEmbed);
+  }
+</script>

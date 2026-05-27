@@ -1,0 +1,54 @@
+---
+import { Image } from "astro:assets";
+import portrait from "../assets/portrait.png";
+---
+
+<section id="top" class="relative overflow-hidden min-h-[100svh] grid place-items-center px-6 py-32">
+  <div class="absolute inset-0 -z-10 opacity-[0.35]">
+    <Image
+      src={portrait}
+      alt=""
+      widths={[480, 768, 1200, 1600]}
+      sizes="(min-width: 1200px) 1600px, 100vw"
+      class="w-full h-full object-cover"
+      loading="eager"
+    />
+    <div class="absolute inset-0" style="background: linear-gradient(180deg, var(--color-paper) 0%, transparent 40%, var(--color-paper) 100%);"></div>
+  </div>
+
+  <div class="max-w-[1100px] w-full grid lg:grid-cols-[1.2fr_1fr] items-center gap-12">
+    <div class="reveal">
+      <p class="font-display italic text-[var(--color-accent)] text-xl mb-5" style="letter-spacing:0.02em;">
+        Autorin &amp; Malerin im Pfälzer Wald
+      </p>
+      <h1 class="font-display font-medium leading-[0.95] text-[clamp(56px,11vw,168px)]" style="letter-spacing:-0.015em;">
+        Roswitha<br/>Vogel
+      </h1>
+      <p class="mt-7 text-lg text-[var(--color-ink-soft)] max-w-[44ch]">
+        Krimi, Sachbuch, Autobiografie und Acrylmalerei — ein Werk, das aus zwei Stimmen entsteht und sich nie zwischen ihnen entscheidet.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-3 text-sm uppercase tracking-widest text-[var(--color-muted)]">
+        <span>Sechs Bücher</span><span>·</span>
+        <span>Dreiundzwanzig Werke</span><span>·</span>
+        <span>Eine Heimat</span>
+      </div>
+    </div>
+
+    <div class="reveal hidden lg:block">
+      <div class="aspect-[3/4] rounded-3xl overflow-hidden ring-1 ring-[var(--color-line)] shadow-[0_60px_120px_-50px_rgba(22,20,15,0.45)]">
+        <Image
+          src={portrait}
+          alt="Porträt von Roswitha Vogel"
+          widths={[400, 600, 900]}
+          sizes="(min-width: 1024px) 450px, 100vw"
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </div>
+
+  <a href="#bio" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-sm text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors" aria-label="Zur Biografie scrollen">
+    ↓ weiterlesen
+  </a>
+</section>

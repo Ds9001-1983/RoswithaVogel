@@ -1,0 +1,61 @@
+[
+  {
+    "slug": "mannstod",
+    "title": "Mannstod im Pfälzer Wald",
+    "kind": "Kriminalroman",
+    "series": "Pfälzer-Wald-Trilogie · Band 1",
+    "year": 2023,
+    "teaser": "In einem idyllischen Pfälzer Dorf entdeckt man die Leichen zweier Männer in einem alten Forsthaus. Sanders und Klein nehmen die Ermittlungen auf.",
+    "cover": "mannstod.webp",
+    "amazon": "https://www.amazon.de/Mannstod-im-Pfälzer-Wald-Kriminalroman/dp/3887932994"
+  },
+  {
+    "slug": "macht-des-alkohols",
+    "title": "Die Macht des Alkohols und hochsensible Menschen",
+    "kind": "Sachbuch",
+    "subtitle": "Kann man kontrolliert trinken lernen?",
+    "year": 2021,
+    "teaser": "Eine offene, autobiografisch grundierte Auseinandersetzung mit Alkohol — gedacht für hochsensible Menschen, die nach einem ehrlichen Umgang mit sich selbst suchen.",
+    "cover": "macht-des-alkohols.jpg",
+    "amazon": null
+  },
+  {
+    "slug": "mein-weg-aus-dem-zwinger",
+    "title": "Mein Weg aus dem Zwinger",
+    "kind": "Autobiografie",
+    "subtitle": "Ein kleines Stück Leben",
+    "year": 2020,
+    "teaser": "Roswitha Vogel erzählt mit Augenzwinkern, wie aus engen Verhältnissen ein eigenes Leben werden kann — und warum man sich selbst überallhin mitnimmt.",
+    "cover": "mein-weg-aus-dem-zwinger.jpg",
+    "amazon": "https://www.amazon.de/Mein-Weg-aus-dem-Zwinger/dp/3347133412"
+  },
+  {
+    "slug": "gegenwind",
+    "title": "Gegenwind im Pfälzer Wald",
+    "kind": "Kriminalroman",
+    "series": "Pfälzer-Wald-Trilogie · Band 2",
+    "year": 2023,
+    "teaser": "Der zweite Fall für Sanders und Klein: ein neuer Mord, ein anderer Wald, derselbe leise Schrecken zwischen Wind und Wipfeln.",
+    "cover": null,
+    "amazon": "https://www.amazon.de/Gegenwind-im-Pfälzer-Wald-Kriminalroman/dp/3988860085"
+  },
+  {
+    "slug": "frauenmord",
+    "title": "Frauenmord im Pfälzer Wald",
+    "kind": "Kriminalroman",
+    "series": "Pfälzer-Wald-Trilogie · Band 3",
+    "year": 2024,
+    "teaser": "Der Schlussstein der Trilogie. Wieder ermitteln Sanders und Klein in der Westpfalz — und stoßen auf eine Tat, die mehr Spuren hinterlässt, als ihr Täter wollte.",
+    "cover": null,
+    "amazon": "https://www.amazon.de/Frauenmord-im-Pfälzer-Wald-Kriminalroman/dp/3988860174"
+  },
+  {
+    "slug": "der-kleine-loewe",
+    "title": "Der kleine Löwe",
+    "kind": "Kinderbuch",
+    "year": 2024,
+    "teaser": "Eine kleine Geschichte über Mut, Andersartigkeit und das Recht, man selbst zu sein.",
+    "cover": null,
+    "amazon": "https://www.amazon.de/kleine-Löwe-Roswitha-Vogel/dp/398886031X"
+  }
+]

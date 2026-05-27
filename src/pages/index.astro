@@ -1,0 +1,36 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import BioSection from "../components/BioSection.astro";
+import VideoSection from "../components/VideoSection.astro";
+import BookGrid from "../components/BookGrid.astro";
+import Gallery from "../components/Gallery.astro";
+---
+
+<Base>
+  <Hero />
+  <BioSection />
+  <VideoSection />
+  <BookGrid />
+  <Gallery />
+</Base>
+
+<script>
+  // Reveal-on-scroll mit GSAP ScrollTrigger
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("no-anim"));
+  } else {
+    const { gsap } = await import("gsap");
+    const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+    gsap.registerPlugin(ScrollTrigger);
+    document.querySelectorAll<HTMLElement>(".reveal").forEach((el) => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 85%",
+        onEnter: () => el.classList.add("is-revealed"),
+        once: true,
+      });
+    });
+  }
+</script>

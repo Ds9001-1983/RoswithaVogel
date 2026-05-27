@@ -1,0 +1,38 @@
+---
+import "../styles/global.css";
+import AdaptiveIsland from "../components/AdaptiveIsland.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Roswitha Vogel — Autorin & Malerin im Pfälzer Wald",
+  description = "Krimi-Trilogie, Sachbuch, Autobiografie und Acrylmalerei aus dem Pfälzer Wald.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="de_DE" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <AdaptiveIsland />
+    <main id="top">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

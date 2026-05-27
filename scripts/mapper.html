@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Bild-Mapper · Roswitha Vogel</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a0a0a;
+      --panel: #161616;
+      --line: #2a2a2a;
+      --text: #f4f4f4;
+      --muted: #999;
+      --accent: #d4a574;
+      --warn: #c44;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+    header {
+      max-width: 1400px;
+      margin: 0 auto 24px;
+    }
+    h1 { font: 600 22px/1.2 sans-serif; margin: 0 0 6px; }
+    p.lead { margin: 0 0 16px; color: var(--muted); }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    button, .btn {
+      background: var(--accent);
+      color: #000;
+      border: 0;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font: 600 13px sans-serif;
+      cursor: pointer;
+    }
+    button.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .stats {
+      margin-left: auto;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card.assigned { border-color: var(--accent); }
+    .card.skipped { opacity: 0.5; }
+    .img-wrap {
+      aspect-ratio: 1;
+      background: #000;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .card-body { padding: 10px 12px; }
+    .filename {
+      font: 600 12px ui-monospace, Menlo, monospace;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    select {
+      width: 100%;
+      background: #000;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font: 13px sans-serif;
+    }
+    .footer-bar {
+      position: sticky;
+      bottom: 16px;
+      max-width: 1400px;
+      margin: 24px auto 0;
+      padding: 14px 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .footer-bar code {
+      background: #000;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bild-Mapper</h1>
+    <p class="lead">
+      Ordne jedem Bild den passenden Titel zu. Mehrfachzuordnung ist erlaubt (z.&nbsp;B. 3&times; Triptychon Venedig).
+      &bdquo;— nicht verwenden —&ldquo; lässt das Bild aus der Galerie heraus.
+      Auswahl wird automatisch im Browser gespeichert (localStorage).
+    </p>
+    <div class="toolbar">
+      <button id="export">Mapping exportieren (gallery.json)</button>
+      <button class="ghost" id="reset">Zurücksetzen</button>
+      <span class="stats" id="stats">0 / 26 zugeordnet</span>
+    </div>
+  </header>
+
+  <main class="grid" id="grid"></main>
+
+  <div class="footer-bar">
+    <strong>Nach dem Export:</strong>
+    <span>Datei <code>gallery.json</code> herunterladen und nach <code>src/data/gallery.json</code> verschieben.</span>
+  </div>
+
+  <script>
+    // Die 23 Werke (Titel · Maße · Preis €) — aus dem Briefing
+    const WORKS = [
+      ['Triptychon: Venedig',    '3 × 50 × 100 cm', 450],
+      ['Paar',                   '60 × 80 cm',      349],
+      ['Spinne',                 '50 × 100 cm',     349],
+      ['Sinnlichkeit',           '50 × 100 cm',     449],
+      ['Blaue Berge',            '70 × 60 cm',      349],
+      ['Lebensbaum',             '80 × 60 cm',      399],
+      ['Heimat',                 '70 × 50 cm',      349],
+      ['Sonnenuntergang',        '70 × 50 cm',      349],
+      ['Grüne Stadt',            '60 × 80 cm',      349],
+      ['Collage Erinnerung',     '50 × 70 cm',      299],
+      ['Nordsee',                '60 × 80 cm',      349],
+      ['Spuren',                 '60 × 80 cm',      349],
+      ['Weißes Land',            '70 × 40 cm',      449],
+      ['Blüte',                  '80 × 60 cm',      349],
+      ['Flußtal',                '60 × 80 cm',      349],
+      ['Weiße Blume',            '60 × 80 cm',      349],
+      ['LA. by Night',           '100 × 50 cm',     449],
+      ['Das Boot',               '60 × 80 cm',      349],
+      ['Toscana',                '70 × 40 cm',      299],
+      ['Lilie',                  '40 × 50 cm',      229],
+      ['Raue See',               '50 × 50 cm',      299],
+      ['Graue Stadt',            '100 × 80 cm',     449],
+      ['Sonnenuntergang über Wasser (Titel nachzuliefern)', '—', null],
+    ];
+
+    const STORAGE_KEY = 'rovo-mapper-v1';
+    const grid = document.getElementById('grid');
+    const stats = document.getElementById('stats');
+    const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateStats();
+    }
+
+    function updateStats() {
+      const used = Object.values(state).filter(v => v && v !== '__skip__').length;
+      stats.textContent = `${used} / 26 zugeordnet`;
+    }
+
+    function makeOptions(selected) {
+      let html = `<option value="">— bitte wählen —</option>`;
+      html += `<option value="__skip__"${selected === '__skip__' ? ' selected' : ''}>— nicht verwenden —</option>`;
+      WORKS.forEach((w, i) => {
+        const val = String(i);
+        html += `<option value="${val}"${selected === val ? ' selected' : ''}>${w[0]} · ${w[1]}${w[2] ? ' · ' + w[2] + ' €' : ''}</option>`;
+      });
+      return html;
+    }
+
+    function updateCardClass(card, value) {
+      card.classList.toggle('assigned', value && value !== '__skip__');
+      card.classList.toggle('skipped', value === '__skip__');
+    }
+
+    for (let i = 1; i <= 26; i++) {
+      const n = String(i).padStart(2, '0');
+      const file = `raw-${n}.jpg`;
+      const card = document.createElement('div');
+      card.className = 'card';
+      const selected = state[file] || '';
+      card.innerHTML = `
+        <div class="img-wrap"><img loading="lazy" src="../src/assets/gallery/${file}" alt="${file}"></div>
+        <div class="card-body">
+          <div class="filename">${file}</div>
+          <select data-file="${file}">${makeOptions(selected)}</select>
+        </div>
+      `;
+      updateCardClass(card, selected);
+      grid.appendChild(card);
+      const sel = card.querySelector('select');
+      sel.addEventListener('change', () => {
+        state[file] = sel.value;
+        if (!sel.value) delete state[file];
+        updateCardClass(card, sel.value);
+        save();
+      });
+    }
+    updateStats();
+
+    document.getElementById('reset').addEventListener('click', () => {
+      if (!confirm('Wirklich alle Zuordnungen zurücksetzen?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    });
+
+    document.getElementById('export').addEventListener('click', () => {
+      const entries = Object.entries(state)
+        .filter(([_, v]) => v && v !== '__skip__')
+        .map(([file, idx]) => {
+          const [title, dims, price] = WORKS[+idx];
+          return { file, title, dims, price };
+        })
+        .sort((a, b) => a.file.localeCompare(b.file));
+      const json = JSON.stringify(entries, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'gallery.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>

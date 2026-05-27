@@ -1,0 +1,46 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-20 border-t border-[var(--color-line)] bg-[color-mix(in_srgb,var(--color-paper)_50%,var(--color-paper-soft)_50%)]">
+  <div class="max-w-[1100px] mx-auto px-6 py-16 grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr] items-start">
+    <div>
+      <p class="font-display font-medium text-2xl mb-2" style="letter-spacing:-0.005em;">Roswitha Vogel</p>
+      <p class="text-[var(--color-ink-soft)] max-w-[40ch] leading-relaxed">
+        Autorin und Malerin aus dem Pfälzer Wald. Sechs Bücher beim IDEA Verlag,
+        eine wachsende Sammlung an Acryl-Werken.
+      </p>
+    </div>
+
+    <div>
+      <p class="text-xs uppercase tracking-[0.18em] text-[var(--color-muted)] mb-4">Kontakt</p>
+      <ul class="space-y-2 text-[15px]">
+        <li>
+          <a
+            href="https://www.facebook.com/www.rovo.acrylbilder.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-[var(--color-accent)] transition-colors"
+          >
+            Facebook · Acrylbilder
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <p class="text-xs uppercase tracking-[0.18em] text-[var(--color-muted)] mb-4">Rechtliches</p>
+      <ul class="space-y-2 text-[15px]">
+        <li><a href="/impressum" class="hover:text-[var(--color-accent)] transition-colors">Impressum</a></li>
+        <li><a href="/datenschutz" class="hover:text-[var(--color-accent)] transition-colors">Datenschutz</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-[var(--color-line)]">
+    <div class="max-w-[1100px] mx-auto px-6 py-6 text-sm text-[var(--color-muted)] flex flex-wrap items-center justify-between gap-3">
+      <span>© {year} Roswitha Vogel · Alle Rechte vorbehalten</span>
+      <span class="italic">Hergestellt im Pfälzer Wald.</span>
+    </div>
+  </div>
+</footer>

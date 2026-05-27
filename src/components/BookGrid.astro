@@ -1,0 +1,93 @@
+---
+import { Image } from "astro:assets";
+import books from "../data/books.json";
+
+// Eager-Glob aller verfügbaren Cover, damit Astro:Assets sie als Imports erkennt
+const coverModules = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/covers/*.{jpg,jpeg,png,webp}",
+  { eager: true }
+);
+const covers: Record<string, ImageMetadata> = {};
+for (const [path, mod] of Object.entries(coverModules)) {
+  const name = path.split("/").pop()!;
+  covers[name] = mod.default;
+}
+---
+
+<section id="buecher" class="px-6 py-32 sm:py-40 bg-[color-mix(in_srgb,var(--color-paper)_60%,var(--color-paper-soft)_40%)]">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="text-center mb-16 reveal">
+      <p class="font-display italic text-[var(--color-accent)] text-lg mb-3" style="letter-spacing:0.02em;">Die Bücher</p>
+      <h2 class="font-display font-medium text-[clamp(40px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
+        Sechs Werke.<br class="sm:hidden"/> Eine Stimme.
+      </h2>
+      <p class="mt-4 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto">
+        Sachbuch, Autobiografie, Kinderbuch und die Pfälzer-Wald-Trilogie —
+        vom IDEA Verlag in Vallendar veröffentlicht.
+      </p>
+    </div>
+
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+      {books.map((b) => {
+        const cover = b.cover ? covers[b.cover] : null;
+        return (
+          <li class="reveal group flex flex-col gap-5 p-5 rounded-2xl bg-[var(--color-paper)] ring-1 ring-[var(--color-line)] hover:-translate-y-1 transition-transform duration-500 hover:shadow-[0_50px_80px_-40px_rgba(22,20,15,0.35)]">
+            <div class="aspect-[2/3] rounded-xl overflow-hidden bg-[var(--color-paper-soft)] ring-1 ring-[var(--color-line)] relative">
+              {cover ? (
+                <Image
+                  src={cover}
+                  alt={`Cover: ${b.title}`}
+                  widths={[260, 400, 600]}
+                  sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                  class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                />
+              ) : (
+                <div class="w-full h-full grid place-items-center text-center px-5 py-6 bg-gradient-to-br from-[var(--color-paper-soft)] to-[#e3d8c0]">
+                  <div>
+                    <p class="font-display italic text-[var(--color-accent)] text-sm mb-2">
+                      {b.series ?? b.kind}
+                    </p>
+                    <p class="font-display text-xl leading-tight text-[var(--color-ink)] font-medium">
+                      {b.title}
+                    </p>
+                    <p class="text-xs uppercase tracking-widest text-[var(--color-muted)] mt-6">
+                      Cover folgt
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div class="flex flex-col gap-3">
+              <p class="text-xs uppercase tracking-[0.15em] text-[var(--color-muted)]">
+                {b.series ?? b.kind}{b.year ? ` · ${b.year}` : ""}
+              </p>
+              <h3 class="font-display text-2xl leading-tight">{b.title}</h3>
+              {b.subtitle && (
+                <p class="font-display italic text-[var(--color-ink-soft)] -mt-2">{b.subtitle}</p>
+              )}
+              <p class="text-[15px] leading-relaxed text-[var(--color-ink-soft)]">{b.teaser}</p>
+              <div class="mt-auto pt-2">
+                {b.amazon ? (
+                  <a
+                    href={b.amazon}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors"
+                  >
+                    Mehr erfahren
+                    <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+                  </a>
+                ) : (
+                  <span class="text-sm text-[var(--color-muted)] italic">
+                    Nur im Buchhandel
+                  </span>
+                )}
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
