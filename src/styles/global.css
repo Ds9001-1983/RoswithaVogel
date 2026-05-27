@@ -3,6 +3,7 @@
 @import "@fontsource/eb-garamond/500.css";
 @import "@fontsource/eb-garamond/600-italic.css";
 @import "@fontsource-variable/inter/wght.css";
+@import "photoswipe/dist/photoswipe.css";
 
 @theme {
   --font-sans: "Inter Variable", system-ui, sans-serif;
@@ -281,13 +282,16 @@ lite-youtube.lyt-activated > .lty-playbtn { opacity: 0; pointer-events: none; }
   scrollbar-width: thin;
   scrollbar-color: var(--color-line) transparent;
   padding-bottom: 8px;
-  touch-action: pan-y;
+  /* Erlaubt horizontales Touch-Swipe + Pinch; vertical Page-Scroll bleibt
+     ueber Bereiche ausserhalb der Galerie moeglich. */
+  touch-action: pan-x pinch-zoom;
 }
 .bento-drag::-webkit-scrollbar { height: 6px; }
 .bento-drag::-webkit-scrollbar-track { background: transparent; }
 .bento-drag::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 999px; }
 .bento-drag.is-dragging { scroll-behavior: auto; cursor: grabbing; }
-.bento-drag.is-dragging .bento-item { pointer-events: none; }
+/* Nur waehrend echtem Drag (Mouse-Move > 6px) Klicks abfangen — wird per JS gesetzt */
+.bento-drag.dragged .bento-item { pointer-events: none; }
 
 .bento-grid {
   /* explizit Hoehe damit grid-rows-2 sinnvoll fuellt */

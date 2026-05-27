@@ -132,49 +132,50 @@ const priceLabel = (p: number | null) =>
 </section>
 
 <script>
-  // Drag-to-scroll auf dem horizontalen Container (ersetzt Framer-Motion drag="x")
+  // Maus-Drag-zu-Scroll (Touch nutzt natives overflow-x Scroll der Plattform)
   const drag = document.getElementById("bento-drag");
   if (drag) {
-    let isDown = false;
-    let startX = 0;
-    let startScroll = 0;
-    let movedDist = 0;
-
     drag.addEventListener("pointerdown", (e) => {
-      // Linke Maustaste / Touch
-      if (e.button !== undefined && e.button !== 0) return;
-      isDown = true;
-      movedDist = 0;
-      startX = e.clientX;
-      startScroll = drag.scrollLeft;
-      drag.setPointerCapture(e.pointerId);
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+
+      const startX = e.clientX;
+      const startScroll = drag.scrollLeft;
+      let movedDist = 0;
+      let dragged = false;
+
+      const onMove = (ev: PointerEvent) => {
+        const dx = ev.clientX - startX;
+        movedDist = Math.max(movedDist, Math.abs(dx));
+        if (movedDist > 6) {
+          if (!dragged) {
+            dragged = true;
+            drag.classList.add("dragged");
+          }
+          drag.scrollLeft = startScroll - dx;
+        }
+      };
+
+      const onUp = () => {
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onUp);
+        document.removeEventListener("pointercancel", onUp);
+        drag.classList.remove("is-dragging");
+        if (dragged) {
+          // Klick nach echtem Drag verschlucken — sonst oeffnet die Lightbox
+          const swallow = (ev: Event) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+          };
+          window.addEventListener("click", swallow, { capture: true, once: true });
+          requestAnimationFrame(() => drag.classList.remove("dragged"));
+        }
+      };
+
+      document.addEventListener("pointermove", onMove);
+      document.addEventListener("pointerup", onUp);
+      document.addEventListener("pointercancel", onUp);
       drag.classList.add("is-dragging");
     });
-    drag.addEventListener("pointermove", (e) => {
-      if (!isDown) return;
-      const dx = e.clientX - startX;
-      movedDist = Math.max(movedDist, Math.abs(dx));
-      drag.scrollLeft = startScroll - dx;
-    });
-    const endDrag = (e: PointerEvent) => {
-      if (!isDown) return;
-      isDown = false;
-      drag.classList.remove("is-dragging");
-      try {
-        drag.releasePointerCapture(e.pointerId);
-      } catch {}
-      // Wenn der Cursor signifikant bewegt wurde → naechsten Klick swallowen
-      if (movedDist > 6) {
-        const swallow = (ev: Event) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          window.removeEventListener("click", swallow, true);
-        };
-        window.addEventListener("click", swallow, true);
-      }
-    };
-    drag.addEventListener("pointerup", endDrag);
-    drag.addEventListener("pointercancel", endDrag);
 
     // Mausrad → horizontal scrollen
     drag.addEventListener(
