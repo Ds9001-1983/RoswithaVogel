@@ -12,6 +12,9 @@ for (const [path, mod] of Object.entries(coverModules)) {
   const name = path.split("/").pop()!;
   covers[name] = mod.default;
 }
+
+const trilogy = books.filter((b) => b.group === "trilogie");
+const others = books.filter((b) => b.group !== "trilogie");
 ---
 
 <section id="buecher" class="px-6 py-20 sm:py-28 lg:py-40 bg-[color-mix(in_srgb,var(--color-paper)_60%,var(--color-paper-soft)_40%)]">
@@ -19,75 +22,166 @@ for (const [path, mod] of Object.entries(coverModules)) {
     <div class="text-center mb-12 sm:mb-16 reveal">
       <p class="font-display italic text-[var(--color-accent)] text-base sm:text-lg mb-2 sm:mb-3" style="letter-spacing:0.02em;">Die Bücher</p>
       <h2 class="font-display font-medium text-[clamp(34px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
-        Sechs Werke.<br class="sm:hidden"/> Eine Stimme.
+        Acht Werke.<br class="sm:hidden"/> Eine Stimme.
       </h2>
       <p class="mt-4 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto text-[15px] sm:text-base">
-        Sachbuch, Autobiografie, Kinderbuch und die Pfälzer-Wald-Trilogie —
-        vom IDEA Verlag in Vallendar veröffentlicht.
+        Eine Trilogie, eine Kinderbuchreihe, ein Sachbuch, eine Autobiografie und
+        gesellschaftskritische Lyrik — fünf davon beim IDEA Verlag in Puchheim.
       </p>
     </div>
 
-    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
-      {books.map((b) => {
-        const cover = b.cover ? covers[b.cover] : null;
-        return (
-          <li class="reveal group flex flex-col gap-4 sm:gap-5 p-4 sm:p-5 rounded-2xl bg-[var(--color-paper)] ring-1 ring-[var(--color-line)] hover:-translate-y-1 transition-transform duration-500 hover:shadow-[0_50px_80px_-40px_rgba(22,20,15,0.35)]">
-            <div class="aspect-[2/3] rounded-xl overflow-hidden bg-[var(--color-paper-soft)] ring-1 ring-[var(--color-line)] relative">
-              {cover ? (
-                <Image
-                  src={cover}
-                  alt={`Cover: ${b.title}`}
-                  widths={[260, 400, 600]}
-                  sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
-                  class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
-                />
-              ) : (
-                <div class="w-full h-full grid place-items-center text-center px-5 py-6 bg-gradient-to-br from-[var(--color-paper-soft)] to-[#e3d8c0]">
-                  <div>
-                    <p class="font-display italic text-[var(--color-accent)] text-sm mb-2">
-                      {b.series ?? b.kind}
-                    </p>
-                    <p class="font-display text-xl leading-tight text-[var(--color-ink)] font-medium">
-                      {b.title}
-                    </p>
-                    <p class="text-xs uppercase tracking-widest text-[var(--color-muted)] mt-6">
-                      Cover folgt
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+    <div class="mb-10 sm:mb-14 reveal">
+      <div class="flex items-center gap-4 mb-6 sm:mb-8">
+        <span class="font-display italic text-[var(--color-accent)] text-base sm:text-lg whitespace-nowrap" style="letter-spacing:0.02em;">
+          Pfälzer-Wald-Trilogie
+        </span>
+        <span class="h-px flex-1 bg-[var(--color-line)]" aria-hidden="true"></span>
+      </div>
 
-            <div class="flex flex-col gap-3">
-              <p class="text-xs uppercase tracking-[0.15em] text-[var(--color-muted)]">
-                {b.series ?? b.kind}{b.year ? ` · ${b.year}` : ""}
-              </p>
-              <h3 class="font-display text-2xl leading-tight">{b.title}</h3>
-              {b.subtitle && (
-                <p class="font-display italic text-[var(--color-ink-soft)] -mt-2">{b.subtitle}</p>
-              )}
-              <p class="text-[15px] leading-relaxed text-[var(--color-ink-soft)]">{b.teaser}</p>
-              <div class="mt-auto pt-2">
-                {b.amazon ? (
-                  <a
-                    href={b.amazon}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors"
-                  >
-                    Mehr erfahren
-                    <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
-                  </a>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+        {trilogy.map((b) => {
+          const cover = b.cover ? covers[b.cover] : null;
+          return (
+            <li class="reveal group flex flex-col gap-4 sm:gap-5 p-4 sm:p-5 rounded-2xl bg-[var(--color-paper)] ring-1 ring-[var(--color-line)] hover:-translate-y-1 transition-transform duration-500 hover:shadow-[0_50px_80px_-40px_rgba(22,20,15,0.35)]">
+              <div class="aspect-[2/3] rounded-xl overflow-hidden bg-[var(--color-paper-soft)] ring-1 ring-[var(--color-line)] relative">
+                {cover ? (
+                  <Image
+                    src={cover}
+                    alt={`Cover: ${b.title}`}
+                    widths={[260, 400, 600]}
+                    sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                    class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                  />
                 ) : (
-                  <span class="text-sm text-[var(--color-muted)] italic">
-                    Nur im Buchhandel
-                  </span>
+                  <div class="w-full h-full grid place-items-center text-center px-5 py-6 bg-gradient-to-br from-[var(--color-paper-soft)] to-[#e3d8c0]">
+                    <div>
+                      <p class="font-display italic text-[var(--color-accent)] text-sm mb-2">
+                        {b.series ?? b.kind}
+                      </p>
+                      <p class="font-display text-xl leading-tight text-[var(--color-ink)] font-medium">
+                        {b.title}
+                      </p>
+                      <p class="text-xs uppercase tracking-widest text-[var(--color-muted)] mt-6">
+                        Cover folgt
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+
+              <div class="flex flex-col gap-3">
+                <p class="text-xs uppercase tracking-[0.15em] text-[var(--color-muted)]">
+                  {b.series ?? b.kind}{b.year ? ` · ${b.year}` : ""}
+                </p>
+                <h3 class="font-display text-2xl leading-tight">{b.title}</h3>
+                {b.subtitle && (
+                  <p class="font-display italic text-[var(--color-ink-soft)] -mt-2">{b.subtitle}</p>
+                )}
+                <p class="text-[15px] leading-relaxed text-[var(--color-ink-soft)]">{b.teaser}</p>
+                {b.publisher && (
+                  <p class="text-xs uppercase tracking-[0.15em] text-[var(--color-muted)]">
+                    {b.publisher}
+                  </p>
+                )}
+                <div class="mt-auto pt-2">
+                  {b.amazon ? (
+                    <a
+                      href={b.amazon}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors"
+                    >
+                      Mehr erfahren
+                      <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+                    </a>
+                  ) : (
+                    <span class="text-sm text-[var(--color-muted)] italic">
+                      Nur im Buchhandel
+                    </span>
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <div class="reveal">
+      <div class="flex items-center gap-4 mb-6 sm:mb-8">
+        <span class="font-display italic text-[var(--color-accent)] text-base sm:text-lg whitespace-nowrap" style="letter-spacing:0.02em;">
+          Weitere Bücher
+        </span>
+        <span class="h-px flex-1 bg-[var(--color-line)]" aria-hidden="true"></span>
+      </div>
+
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+        {others.map((b) => {
+          const cover = b.cover ? covers[b.cover] : null;
+          return (
+            <li class="reveal group flex flex-col gap-4 sm:gap-5 p-4 sm:p-5 rounded-2xl bg-[var(--color-paper)] ring-1 ring-[var(--color-line)] hover:-translate-y-1 transition-transform duration-500 hover:shadow-[0_50px_80px_-40px_rgba(22,20,15,0.35)]">
+              <div class="aspect-[2/3] rounded-xl overflow-hidden bg-[var(--color-paper-soft)] ring-1 ring-[var(--color-line)] relative">
+                {cover ? (
+                  <Image
+                    src={cover}
+                    alt={`Cover: ${b.title}`}
+                    widths={[260, 400, 600]}
+                    sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                    class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                  />
+                ) : (
+                  <div class="w-full h-full grid place-items-center text-center px-5 py-6 bg-gradient-to-br from-[var(--color-paper-soft)] to-[#e3d8c0]">
+                    <div>
+                      <p class="font-display italic text-[var(--color-accent)] text-sm mb-2">
+                        {b.series ?? b.kind}
+                      </p>
+                      <p class="font-display text-xl leading-tight text-[var(--color-ink)] font-medium">
+                        {b.title}
+                      </p>
+                      <p class="text-xs uppercase tracking-widest text-[var(--color-muted)] mt-6">
+                        Cover folgt
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div class="flex flex-col gap-3">
+                <p class="text-xs uppercase tracking-[0.15em] text-[var(--color-muted)]">
+                  {b.series ?? b.kind}{b.year ? ` · ${b.year}` : ""}
+                </p>
+                <h3 class="font-display text-2xl leading-tight">{b.title}</h3>
+                {b.subtitle && (
+                  <p class="font-display italic text-[var(--color-ink-soft)] -mt-2">{b.subtitle}</p>
+                )}
+                <p class="text-[15px] leading-relaxed text-[var(--color-ink-soft)]">{b.teaser}</p>
+                {b.publisher && (
+                  <p class="text-xs uppercase tracking-[0.15em] text-[var(--color-muted)]">
+                    {b.publisher}
+                  </p>
+                )}
+                <div class="mt-auto pt-2">
+                  {b.amazon ? (
+                    <a
+                      href={b.amazon}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 text-sm font-semibold tracking-wide text-[var(--color-accent)] hover:text-[var(--color-ink)] transition-colors"
+                    >
+                      Mehr erfahren
+                      <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+                    </a>
+                  ) : (
+                    <span class="text-sm text-[var(--color-muted)] italic">
+                      Nur im Buchhandel
+                    </span>
+                  )}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   </div>
 </section>

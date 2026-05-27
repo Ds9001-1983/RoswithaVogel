@@ -1,6 +1,7 @@
 ---
 import { getImage } from "astro:assets";
 import galleryData from "../data/gallery.json";
+import LiteYouTube from "./LiteYouTube.astro";
 
 const galleryModules = import.meta.glob<{ default: ImageMetadata }>(
   "../assets/gallery/*.jpg",
@@ -76,6 +77,16 @@ const priceLabel = (p: number | null) =>
       jedes Werk öffnet sich in der Großansicht. Bei Interesse Kontakt über
       Facebook oder per Mail.
     </p>
+  </div>
+
+  <div class="container mx-auto px-4 mt-10 sm:mt-14 reveal">
+    <div class="max-w-[1100px] mx-auto">
+      <LiteYouTube videoId="KE_bPM7yZdY" playLabel="Video abspielen: Roswitha Vogel" />
+      <p class="text-sm text-[var(--color-muted)] mt-4 italic text-center">
+        Mit dem Abspielen werden Inhalte von YouTube (Google&nbsp;Ireland&nbsp;Ltd.) geladen.
+        Details siehe <a href="/datenschutz" class="underline hover:text-[var(--color-accent)]">Datenschutz</a>.
+      </p>
+    </div>
   </div>
 
   <div

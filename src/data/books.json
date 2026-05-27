@@ -4,39 +4,23 @@
     "title": "Mannstod im Pfälzer Wald",
     "kind": "Kriminalroman",
     "series": "Pfälzer-Wald-Trilogie · Band 1",
+    "group": "trilogie",
     "year": 2023,
     "teaser": "In einem idyllischen Pfälzer Dorf entdeckt man die Leichen zweier Männer in einem alten Forsthaus. Sanders und Klein nehmen die Ermittlungen auf.",
     "cover": "mannstod.webp",
+    "publisher": "IDEA Verlag, Puchheim",
     "amazon": "https://www.amazon.de/Mannstod-im-Pfälzer-Wald-Kriminalroman/dp/3887932994"
-  },
-  {
-    "slug": "macht-des-alkohols",
-    "title": "Die Macht des Alkohols und hochsensible Menschen",
-    "kind": "Sachbuch",
-    "subtitle": "Kann man kontrolliert trinken lernen?",
-    "year": 2021,
-    "teaser": "Eine offene, autobiografisch grundierte Auseinandersetzung mit Alkohol — gedacht für hochsensible Menschen, die nach einem ehrlichen Umgang mit sich selbst suchen.",
-    "cover": "macht-des-alkohols.jpg",
-    "amazon": null
-  },
-  {
-    "slug": "mein-weg-aus-dem-zwinger",
-    "title": "Mein Weg aus dem Zwinger",
-    "kind": "Autobiografie",
-    "subtitle": "Ein kleines Stück Leben",
-    "year": 2020,
-    "teaser": "Roswitha Vogel erzählt mit Augenzwinkern, wie aus engen Verhältnissen ein eigenes Leben werden kann — und warum man sich selbst überallhin mitnimmt.",
-    "cover": "mein-weg-aus-dem-zwinger.jpg",
-    "amazon": "https://www.amazon.de/Mein-Weg-aus-dem-Zwinger/dp/3347133412"
   },
   {
     "slug": "gegenwind",
     "title": "Gegenwind im Pfälzer Wald",
     "kind": "Kriminalroman",
     "series": "Pfälzer-Wald-Trilogie · Band 2",
+    "group": "trilogie",
     "year": 2023,
     "teaser": "Der zweite Fall für Sanders und Klein: ein neuer Mord, ein anderer Wald, derselbe leise Schrecken zwischen Wind und Wipfeln.",
     "cover": "gegenwind.jpg",
+    "publisher": "IDEA Verlag, Puchheim",
     "amazon": "https://www.amazon.de/Gegenwind-im-Pfälzer-Wald-Kriminalroman/dp/3988860085"
   },
   {
@@ -44,18 +28,70 @@
     "title": "Frauenmord im Pfälzer Wald",
     "kind": "Kriminalroman",
     "series": "Pfälzer-Wald-Trilogie · Band 3",
+    "group": "trilogie",
     "year": 2024,
     "teaser": "Der Schlussstein der Trilogie. Wieder ermitteln Sanders und Klein in der Westpfalz — und stoßen auf eine Tat, die mehr Spuren hinterlässt, als ihr Täter wollte.",
     "cover": "frauenmord.jpg",
+    "publisher": "IDEA Verlag, Puchheim",
     "amazon": "https://www.amazon.de/Frauenmord-im-Pfälzer-Wald-Kriminalroman/dp/3988860174"
   },
   {
     "slug": "der-kleine-loewe",
     "title": "Der kleine Löwe",
     "kind": "Kinderbuch",
+    "group": "weitere",
     "year": 2024,
     "teaser": "Eine kleine Geschichte über Mut, Andersartigkeit und das Recht, man selbst zu sein.",
     "cover": "loewe.jpg",
+    "publisher": "IDEA Verlag, Puchheim",
     "amazon": "https://www.amazon.de/kleine-Löwe-Roswitha-Vogel/dp/398886031X"
+  },
+  {
+    "slug": "aaron-wird-erwachsen",
+    "title": "Aaron wird erwachsen",
+    "kind": "Kinderbuch",
+    "subtitle": "Fortsetzung zum Kleinen Löwen",
+    "group": "weitere",
+    "year": 2026,
+    "teaser": "Aaron und seine Freunde leben friedlich in ihrem kleinen Königreich — bis es eines Morgens an der Tür klopft und eine durchnässte Katze hereinbittet. Was als Geste der Gastfreundschaft beginnt, verändert ihre Welt für immer.",
+    "cover": "aaron.jpg",
+    "publisher": "IDEA Verlag, Puchheim",
+    "amazon": "https://www.buchfreund.de/de/d/e/9783988860446/aaron-wird-erwachsen?bookId=A65283113&src=2&sellerId=14502"
+  },
+  {
+    "slug": "mein-weg-aus-dem-zwinger",
+    "title": "Mein Weg aus dem Zwinger",
+    "kind": "Autobiografie",
+    "subtitle": "Ein kleines Stück Leben",
+    "group": "weitere",
+    "year": 2020,
+    "teaser": "Roswitha Vogel erzählt mit Augenzwinkern, wie aus engen Verhältnissen ein eigenes Leben werden kann — und warum man sich selbst überallhin mitnimmt.",
+    "cover": "mein-weg-aus-dem-zwinger.jpg",
+    "publisher": null,
+    "amazon": "https://www.amazon.de/Mein-Weg-aus-dem-Zwinger/dp/3347133412"
+  },
+  {
+    "slug": "macht-des-alkohols",
+    "title": "Die Macht des Alkohols und hochsensible Menschen",
+    "kind": "Sachbuch",
+    "subtitle": "Kann man kontrolliert trinken lernen?",
+    "group": "weitere",
+    "year": 2021,
+    "teaser": "Eine offene, autobiografisch grundierte Auseinandersetzung mit Alkohol — gedacht für hochsensible Menschen, die nach einem ehrlichen Umgang mit sich selbst suchen.",
+    "cover": "macht-des-alkohols.jpg",
+    "publisher": null,
+    "amazon": null
+  },
+  {
+    "slug": "mordsleben-durch-corona",
+    "title": "Mordsleben durch Corona",
+    "kind": "Lyrik & Gesellschaftskritik",
+    "subtitle": "Autobiographische und gesellschaftskritische Gedanken",
+    "group": "weitere",
+    "year": 2025,
+    "teaser": "Krisenherde überall, und die Menschen bringen es einfach nicht fertig, in Frieden zu leben. Ein lyrisch-essayistischer Blick auf eine Welt, die seit Corona aus dem Takt geraten scheint.",
+    "cover": "mordsleben.webp",
+    "publisher": "united p.c. Verlag",
+    "amazon": "https://www.united-pc.eu/buecher/belletristik/lyrik-dramatik/mordsleben-durch-corona.html"
   }
 ]

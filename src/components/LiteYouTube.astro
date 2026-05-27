@@ -1,0 +1,55 @@
+---
+interface Props {
+  videoId: string;
+  playLabel?: string;
+}
+
+const { videoId, playLabel = "Video abspielen" } = Astro.props;
+---
+
+<lite-youtube
+  videoid={videoId}
+  playlabel={playLabel}
+  params="rel=0&modestbranding=1"
+  style={`background-image: url("https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg");`}
+>
+  <button class="lty-playbtn" aria-label={playLabel}></button>
+</lite-youtube>
+
+<script>
+  // lite-youtube-embed inline (Paul Irish, MIT)
+  class LiteYTEmbed extends HTMLElement {
+    connectedCallback() {
+      this.videoId = encodeURIComponent(this.getAttribute("videoid") || "");
+      this.addEventListener("pointerover", LiteYTEmbed.warmConnections, { once: true });
+      this.addEventListener("click", () => this.addIframe());
+    }
+    static warmConnections() {
+      if (LiteYTEmbed.preconnected) return;
+      const add = (href: string) => {
+        const l = document.createElement("link");
+        l.rel = "preconnect";
+        l.href = href;
+        document.head.append(l);
+      };
+      add("https://www.youtube-nocookie.com");
+      add("https://www.google.com");
+      LiteYTEmbed.preconnected = true;
+    }
+    addIframe() {
+      if (this.classList.contains("lyt-activated")) return;
+      const params = this.getAttribute("params") || "";
+      const iframeHTML = `
+        <iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          src="https://www.youtube-nocookie.com/embed/${this.videoId}?autoplay=1&${params}"></iframe>`;
+      this.insertAdjacentHTML("beforeend", iframeHTML);
+      this.classList.add("lyt-activated");
+    }
+    static preconnected = false;
+    videoId = "";
+  }
+  if (!customElements.get("lite-youtube")) {
+    customElements.define("lite-youtube", LiteYTEmbed);
+  }
+</script>
