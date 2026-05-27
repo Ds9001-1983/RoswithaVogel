@@ -18,7 +18,7 @@ const items = await Promise.all(
     .map(async (g) => {
       const optimized = await getImage({
         src: g.src!,
-        widths: [320, 480, 720],
+        widths: [320, 480, 640],
         formats: ["avif", "webp", "jpg"],
       });
       const full = await getImage({
@@ -41,26 +41,25 @@ const priceLabel = (p: number | null) =>
   p == null ? "Preis auf Anfrage" : `${p} €`;
 ---
 
-<section id="galerie" class="px-6 py-20 sm:py-28 lg:py-40 overflow-hidden">
-  <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-12 sm:mb-16 reveal max-w-[760px] mx-auto px-2">
+<!--
+  Pattern aus der 21st.dev-Demo (ravikatiyar/circular-gallery):
+    Aussen: hohes Container-Element (500vh)
+    Innen:  sticky h-screen Buehne
+    Galerie rotiert ueber den globalen ScrollY der Page.
+-->
+<section id="galerie" class="cg-section" aria-label="Galerie der Acryl-Werke">
+  <div class="cg-sticky">
+    <div class="cg-title">
       <p class="font-display italic text-[var(--color-accent)] text-base sm:text-lg mb-2 sm:mb-3" style="letter-spacing:0.02em;">Die Künstlerin</p>
-      <h2 class="font-display font-medium text-[clamp(34px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
+      <h2 class="font-display font-medium text-[clamp(30px,5vw,68px)] leading-[1.05]" style="letter-spacing:-0.015em;">
         Acryl. Großformatig.<br class="sm:hidden"/> Aus dem Pfälzer Wald.
       </h2>
-      <p class="mt-4 sm:mt-5 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto leading-relaxed text-[15px] sm:text-base">
-        Eine wachsende Sammlung großformatiger Acryl-Werke. Beim Scrollen wandert
-        die Ausstellung. Klick auf ein Werk öffnet die Großansicht — bei Interesse
-        Kontakt über Facebook oder per Mail.
+      <p class="cg-hint mt-3 sm:mt-4 text-[var(--color-muted)] text-[11px] sm:text-xs uppercase tracking-[0.22em]">
+        Scrollen · die Galerie dreht sich
       </p>
     </div>
 
-    <div
-      class="cg-stage reveal"
-      id="circular-gallery"
-      role="region"
-      aria-label="Acryl-Werke, dreidimensional rotierend"
-    >
+    <div class="cg-stage" id="cg-stage" role="region" aria-label="Acryl-Werke, dreidimensional rotierend">
       <div class="cg-rotor" id="cg-rotor">
         {items.map((item) => (
           <a
@@ -78,7 +77,7 @@ const priceLabel = (p: number | null) =>
             <img
               src={item.thumbSrc}
               srcset={item.thumbSrcset}
-              sizes="(min-width: 1024px) 320px, (min-width: 640px) 260px, 200px"
+              sizes="(min-width: 1024px) 300px, (min-width: 640px) 240px, 180px"
               alt={`${item.title} — ${item.dims}`}
               loading="lazy"
               decoding="async"
@@ -93,28 +92,32 @@ const priceLabel = (p: number | null) =>
           </a>
         ))}
       </div>
-
-      <p class="cg-hint" aria-hidden="true">scrollen oder warten · die Galerie dreht sich</p>
     </div>
   </div>
 </section>
 
 <script>
-  const stage = document.getElementById("circular-gallery");
+  // 1:1 Port der React-Komponente in Vanilla-TS — selbe Mechanik:
+  // - scrollY / scrollableHeight => Rotation 0..360
+  // - Auto-Rotate (autoRotateSpeed 0.02 °/frame), pausiert waehrend Scroll
+  // - opacity = max(0.3, 1 - relativeAngle/180)
+
+  const stage = document.getElementById("cg-stage");
   const rotor = document.getElementById("cg-rotor");
   if (stage && rotor) {
     const cards = Array.from(stage.querySelectorAll<HTMLElement>(".cg-card"));
     const N = cards.length;
     const anglePerItem = 360 / N;
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const autoRotateSpeed = 0.02;
 
-    const getRadius = () =>
-      parseFloat(
-        getComputedStyle(stage).getPropertyValue("--cg-radius").trim() || "540"
-      );
+    const radiusFromVar = () => {
+      const v = getComputedStyle(stage).getPropertyValue("--cg-radius").trim();
+      return parseFloat(v) || 600;
+    };
 
     const placeCards = () => {
-      const r = getRadius();
+      const r = radiusFromVar();
       cards.forEach((c, i) => {
         c.style.transform = `rotateY(${i * anglePerItem}deg) translateZ(${r}px)`;
       });
@@ -125,18 +128,17 @@ const priceLabel = (p: number | null) =>
     let rotation = 0;
     let isScrolling = false;
     let scrollTimer: ReturnType<typeof setTimeout> | null = null;
-    const autoSpeed = 0.045;
 
     const applyRotation = () => {
       rotor.style.transform = `rotateY(${rotation}deg)`;
+      const total = ((rotation % 360) + 360) % 360;
       cards.forEach((c, i) => {
         const itemAngle = i * anglePerItem;
-        const rel = ((itemAngle + rotation) % 360 + 360) % 360;
+        const rel = (itemAngle + total) % 360;
         const norm = Math.abs(rel > 180 ? 360 - rel : rel);
-        const opacity = Math.max(0.25, 1 - norm / 180);
+        const opacity = Math.max(0.3, 1 - norm / 180);
         c.style.opacity = String(opacity);
-        // Cards weit hinten kein Klick mehr abnehmen
-        c.style.pointerEvents = opacity < 0.45 ? "none" : "auto";
+        c.style.pointerEvents = opacity < 0.5 ? "none" : "auto";
       });
     };
 
@@ -150,29 +152,28 @@ const priceLabel = (p: number | null) =>
       applyRotation();
       scrollTimer = setTimeout(() => {
         isScrolling = false;
-      }, 160);
+      }, 150);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    let frame = 0;
     const tick = () => {
       if (!isScrolling && !reducedMotion) {
-        rotation += autoSpeed;
+        rotation += autoRotateSpeed;
         applyRotation();
       }
-      frame = requestAnimationFrame(tick);
+      requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
+    requestAnimationFrame(tick);
 
-    // initial state
+    // initial sync
     onScroll();
   }
 
-  // PhotoSwipe-Lightbox
+  // PhotoSwipe-Lightbox bleibt erhalten (Click → Grossansicht)
   if (document.querySelector(".cg-card")) {
     import("photoswipe/lightbox").then(({ default: PhotoSwipeLightbox }) => {
       const lightbox = new PhotoSwipeLightbox({
-        gallery: "#circular-gallery",
+        gallery: "#cg-stage",
         children: "a.cg-card",
         pswpModule: () => import("photoswipe"),
         bgOpacity: 0.95,

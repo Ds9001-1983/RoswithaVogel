@@ -272,36 +272,60 @@ lite-youtube.lyt-activated { cursor: unset; }
 lite-youtube.lyt-activated::before,
 lite-youtube.lyt-activated > .lty-playbtn { opacity: 0; pointer-events: none; }
 
-/* Gallery — Circular 3D Carousel */
+/* Gallery — Circular 3D Carousel (Pattern: 21st.dev/ravikatiyar)
+   Outer 500vh-Wrap + Inner sticky h-screen — Galerie rotiert beim Scroll. */
+.cg-section {
+  position: relative;
+  width: 100%;
+  height: 500vh;
+}
+@media (max-width: 1024px) { .cg-section { height: 400vh; } }
+@media (max-width: 640px)  { .cg-section { height: 320vh; } }
+
+.cg-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cg-title {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: min(720px, calc(100% - 32px));
+  text-align: center;
+  pointer-events: none;
+}
+.cg-title h2 { color: var(--color-ink); }
+.cg-hint { display: block; opacity: 0.85; }
+
 .cg-stage {
   position: relative;
   width: 100%;
-  height: var(--cg-stage-h, 420px);
-  perspective: 1800px;
-  perspective-origin: 50% 50%;
+  height: 100%;
+  perspective: 2000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  /* Responsive Karten + Radius via Custom Properties */
-  --cg-card-w: 160px;
-  --cg-card-h: 220px;
-  --cg-radius: 220px;
-  --cg-stage-h: 420px;
+  /* Demo-Defaults: 300x400, radius 600 */
+  --cg-w: 300px;
+  --cg-h: 400px;
+  --cg-radius: 600;
 }
-@media (min-width: 640px) {
-  .cg-stage {
-    --cg-card-w: 220px;
-    --cg-card-h: 300px;
-    --cg-radius: 380px;
-    --cg-stage-h: 540px;
-  }
+@media (max-width: 1024px) {
+  .cg-stage { --cg-w: 240px; --cg-h: 320px; --cg-radius: 440; perspective: 1700px; }
 }
-@media (min-width: 1024px) {
-  .cg-stage {
-    --cg-card-w: 280px;
-    --cg-card-h: 380px;
-    --cg-radius: 540px;
-    --cg-stage-h: 640px;
-    perspective: 2000px;
-  }
+@media (max-width: 640px) {
+  .cg-stage { --cg-w: 190px; --cg-h: 254px; --cg-radius: 320; perspective: 1400px; }
 }
 
 .cg-rotor {
@@ -316,23 +340,21 @@ lite-youtube.lyt-activated > .lty-playbtn { opacity: 0; pointer-events: none; }
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--cg-card-w);
-  height: var(--cg-card-h);
-  margin-left: calc(var(--cg-card-w) / -2);
-  margin-top: calc(var(--cg-card-h) / -2);
-  border-radius: 6px;
+  width: var(--cg-w);
+  height: var(--cg-h);
+  margin-left: calc(var(--cg-w) / -2);
+  margin-top: calc(var(--cg-h) / -2);
+  border-radius: 8px;
   overflow: hidden;
-  background: var(--color-paper-soft);
-  box-shadow: 0 30px 60px -25px rgba(22, 20, 15, 0.45);
+  background: color-mix(in srgb, var(--color-paper) 70%, transparent);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   cursor: zoom-in;
   text-decoration: none;
   color: inherit;
-  transition: opacity 320ms linear, box-shadow 360ms ease;
+  transition: opacity 0.3s linear;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-}
-.cg-card:hover {
-  box-shadow: 0 40px 80px -30px rgba(22, 20, 15, 0.6);
 }
 .cg-card:focus-visible {
   outline: 2px solid var(--color-accent);
@@ -352,56 +374,36 @@ lite-youtube.lyt-activated > .lty-playbtn { opacity: 0; pointer-events: none; }
 .cg-caption {
   position: absolute;
   inset: auto 0 0 0;
-  padding: 14px 14px 12px;
-  color: #f6f2ea;
-  background: linear-gradient(180deg, transparent, rgba(10, 8, 7, 0.86));
-  font-size: 12px;
-  letter-spacing: 0.01em;
+  padding: 16px;
+  color: #ffffff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
   pointer-events: none;
 }
 .cg-caption strong {
   display: block;
   font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 2px;
+  font-size: 20px;
+  font-weight: 700;
   letter-spacing: 0;
+  margin-bottom: 2px;
 }
 .cg-caption .dims {
-  display: inline-block;
+  display: block;
+  font-size: 14px;
   font-style: italic;
-  font-family: var(--font-display);
-  font-size: 13px;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 .cg-caption .price {
-  margin: 4px 0 0;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  opacity: 0.78;
+  margin: 8px 0 0;
+  font-size: 12px;
+  opacity: 0.7;
   font-variant-numeric: tabular-nums;
 }
-@media (min-width: 1024px) {
-  .cg-caption { padding: 18px 18px 16px; }
-  .cg-caption strong { font-size: 19px; margin-bottom: 3px; }
-  .cg-caption .dims { font-size: 14px; }
-  .cg-caption .price { font-size: 12px; margin-top: 6px; }
-}
-
-.cg-hint {
-  position: absolute;
-  inset: auto 0 -10px 0;
-  text-align: center;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-  opacity: 0.7;
-  pointer-events: none;
-}
-@media (min-width: 640px) {
-  .cg-hint { inset: auto 0 -20px 0; font-size: 12px; }
+@media (max-width: 640px) {
+  .cg-caption { padding: 10px 12px; }
+  .cg-caption strong { font-size: 15px; }
+  .cg-caption .dims { font-size: 11px; }
+  .cg-caption .price { font-size: 10px; margin-top: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
