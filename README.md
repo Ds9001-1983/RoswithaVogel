@@ -46,30 +46,19 @@ Im Tool ordnest du jedem Bild (raw-01.jpg … raw-26.jpg) den korrekten
 Werk-Titel zu, klickst auf *Mapping exportieren* und ersetzt damit
 `src/data/gallery.json`. Dauert ca. 10 Min.
 
-### 2. Fehlende Buchcover ergänzen
-
-3 von 6 Buchcovern sind enthalten (Mannstod, Macht des Alkohols, Mein Weg
-aus dem Zwinger — von Pfalzdigital).
-Fehlen noch: **Gegenwind**, **Frauenmord**, **Der kleine Löwe**.
-
-Wenn die Cover als JPG/PNG/WebP vorliegen, einfach nach
-`src/assets/covers/<slug>.<ext>` ablegen und in `src/data/books.json`
-das `"cover"` Feld setzen, z.&nbsp;B. `"cover": "gegenwind.jpg"`.
-Karten ohne Cover zeigen automatisch eine typografische Fallback-Karte.
-
-### 3. Impressum + Datenschutz mit Pflichtangaben füllen
+### 2. Impressum + Datenschutz mit Pflichtangaben füllen
 
 `src/pages/impressum.astro` und `src/pages/datenschutz.astro` enthalten
 Platzhalter — Anschrift, E-Mail, Telefon u.&nbsp;a. müssen vor dem Launch
 gesetzt werden.
 
-### 4. Bio-Texte gegenlesen
+### 3. Bio-Texte gegenlesen
 
 Die paraphrasierten Texte in `src/components/BioSection.astro` stammen
 aus dem Pfalzdigital-Artikel, sind aber neu formuliert. Vor Launch
 durch Roswitha freigeben lassen.
 
-### 5. Nutzungsrechte Bilder
+### 4. Nutzungsrechte Bilder
 
 Die Pfalzdigital-Bilder wurden ursprünglich von Roswitha Vogel zur
 Verfügung gestellt — als Urheberin kann sie die Wiederverwendung auf
@@ -93,7 +82,7 @@ RoswithaVogel/
     ├── assets/
     │   ├── portrait.png
     │   ├── gallery/            # raw-01.jpg … raw-26.jpg
-    │   └── covers/             # 3 Cover + Platz für 3 weitere
+    │   └── covers/             # alle 6 Buchcover
     ├── components/
     │   ├── AdaptiveIsland.astro   ← Floating-Pill-Navigation
     │   ├── Hero.astro
@@ -128,7 +117,7 @@ Manueller Walkthrough (Desktop 1440 + Mobile 390):
 - Hero scrollt smooth zu allen 4 Sektionen über Insel-Klick
 - Adaptive Island schrumpft beim Scroll und zeigt aktive Sektion
 - Mobile-Insel zeigt Pill mit "Menü" → öffnet Vollbild-Sheet
-- Bücher: 5 von 6 Karten haben Amazon-Button (Macht des Alkohols nicht)
+- Bücher: 6 Cover sichtbar, 5 von 6 Karten haben Amazon-Button (Macht des Alkohols nicht)
 - Galerie: Tile-Click öffnet Lightbox mit Caption, Pfeile + ESC funktionieren
 - Video: Vorschau klickbar → lädt YouTube-Iframe
 - Lighthouse ≥ 95 (statisch, lokal gehostete Fonts)

@@ -36,7 +36,7 @@
     "series": "Pfälzer-Wald-Trilogie · Band 2",
     "year": 2023,
     "teaser": "Der zweite Fall für Sanders und Klein: ein neuer Mord, ein anderer Wald, derselbe leise Schrecken zwischen Wind und Wipfeln.",
-    "cover": null,
+    "cover": "gegenwind.jpg",
     "amazon": "https://www.amazon.de/Gegenwind-im-Pfälzer-Wald-Kriminalroman/dp/3988860085"
   },
   {
@@ -46,7 +46,7 @@
     "series": "Pfälzer-Wald-Trilogie · Band 3",
     "year": 2024,
     "teaser": "Der Schlussstein der Trilogie. Wieder ermitteln Sanders und Klein in der Westpfalz — und stoßen auf eine Tat, die mehr Spuren hinterlässt, als ihr Täter wollte.",
-    "cover": null,
+    "cover": "frauenmord.jpg",
     "amazon": "https://www.amazon.de/Frauenmord-im-Pfälzer-Wald-Kriminalroman/dp/3988860174"
   },
   {
@@ -55,7 +55,7 @@
     "kind": "Kinderbuch",
     "year": 2024,
     "teaser": "Eine kleine Geschichte über Mut, Andersartigkeit und das Recht, man selbst zu sein.",
-    "cover": null,
+    "cover": "loewe.jpg",
     "amazon": "https://www.amazon.de/kleine-Löwe-Roswitha-Vogel/dp/398886031X"
   }
 ]
