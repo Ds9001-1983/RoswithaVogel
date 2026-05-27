@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import portrait from "../assets/portrait.png";
 ---
 
-<section id="top" class="relative overflow-hidden min-h-[100svh] grid place-items-center px-6 py-32">
+<section id="top" class="relative overflow-hidden min-h-[100svh] grid place-items-center px-6 py-20 sm:py-28 lg:py-32">
   <div class="absolute inset-0 -z-10 opacity-[0.35]">
     <Image
       src={portrait}
@@ -24,14 +24,16 @@ import portrait from "../assets/portrait.png";
       <h1 class="font-display font-medium leading-[0.95] text-[clamp(56px,11vw,168px)]" style="letter-spacing:-0.015em;">
         Roswitha<br/>Vogel
       </h1>
-      <p class="mt-7 text-lg text-[var(--color-ink-soft)] max-w-[44ch]">
+      <p class="mt-6 sm:mt-7 text-base sm:text-lg text-[var(--color-ink-soft)] max-w-[44ch]">
         Krimi, Sachbuch, Autobiografie und Acrylmalerei — ein Werk, das aus zwei Stimmen entsteht und sich nie zwischen ihnen entscheidet.
       </p>
-      <div class="mt-10 flex flex-wrap gap-3 text-sm uppercase tracking-widest text-[var(--color-muted)]">
-        <span>Sechs Bücher</span><span>·</span>
-        <span>Dreiundzwanzig Werke</span><span>·</span>
-        <span>Eine Heimat</span>
-      </div>
+      <ul class="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-y-2 gap-x-3 text-xs sm:text-sm uppercase tracking-[0.18em] sm:tracking-widest text-[var(--color-muted)] list-none p-0">
+        <li>Sechs Bücher</li>
+        <li class="hidden sm:block" aria-hidden="true">·</li>
+        <li>Dreiundzwanzig Werke</li>
+        <li class="hidden sm:block" aria-hidden="true">·</li>
+        <li>Eine Heimat</li>
+      </ul>
     </div>
 
     <div class="reveal hidden lg:block">

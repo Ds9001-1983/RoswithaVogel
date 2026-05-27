@@ -14,24 +14,24 @@ for (const [path, mod] of Object.entries(coverModules)) {
 }
 ---
 
-<section id="buecher" class="px-6 py-32 sm:py-40 bg-[color-mix(in_srgb,var(--color-paper)_60%,var(--color-paper-soft)_40%)]">
+<section id="buecher" class="px-6 py-20 sm:py-28 lg:py-40 bg-[color-mix(in_srgb,var(--color-paper)_60%,var(--color-paper-soft)_40%)]">
   <div class="max-w-[1200px] mx-auto">
-    <div class="text-center mb-16 reveal">
-      <p class="font-display italic text-[var(--color-accent)] text-lg mb-3" style="letter-spacing:0.02em;">Die Bücher</p>
-      <h2 class="font-display font-medium text-[clamp(40px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
+    <div class="text-center mb-12 sm:mb-16 reveal">
+      <p class="font-display italic text-[var(--color-accent)] text-base sm:text-lg mb-2 sm:mb-3" style="letter-spacing:0.02em;">Die Bücher</p>
+      <h2 class="font-display font-medium text-[clamp(34px,5.2vw,72px)] leading-[1.05]" style="letter-spacing:-0.015em;">
         Sechs Werke.<br class="sm:hidden"/> Eine Stimme.
       </h2>
-      <p class="mt-4 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto">
+      <p class="mt-4 text-[var(--color-ink-soft)] max-w-[58ch] mx-auto text-[15px] sm:text-base">
         Sachbuch, Autobiografie, Kinderbuch und die Pfälzer-Wald-Trilogie —
         vom IDEA Verlag in Vallendar veröffentlicht.
       </p>
     </div>
 
-    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
       {books.map((b) => {
         const cover = b.cover ? covers[b.cover] : null;
         return (
-          <li class="reveal group flex flex-col gap-5 p-5 rounded-2xl bg-[var(--color-paper)] ring-1 ring-[var(--color-line)] hover:-translate-y-1 transition-transform duration-500 hover:shadow-[0_50px_80px_-40px_rgba(22,20,15,0.35)]">
+          <li class="reveal group flex flex-col gap-4 sm:gap-5 p-4 sm:p-5 rounded-2xl bg-[var(--color-paper)] ring-1 ring-[var(--color-line)] hover:-translate-y-1 transition-transform duration-500 hover:shadow-[0_50px_80px_-40px_rgba(22,20,15,0.35)]">
             <div class="aspect-[2/3] rounded-xl overflow-hidden bg-[var(--color-paper-soft)] ring-1 ring-[var(--color-line)] relative">
               {cover ? (
                 <Image
