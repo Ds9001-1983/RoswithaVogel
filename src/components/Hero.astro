@@ -3,54 +3,75 @@ import { Image } from "astro:assets";
 import portrait from "../assets/portrait.png";
 ---
 
-<section id="top" class="relative overflow-hidden min-h-[100svh] grid place-items-center px-6 py-20 sm:py-28 lg:py-32">
-  <div class="absolute inset-0 -z-10 opacity-[0.35]">
-    <Image
-      src={portrait}
-      alt=""
-      widths={[480, 768, 1200, 1600]}
-      sizes="(min-width: 1200px) 1600px, 100vw"
-      class="w-full h-full object-cover"
-      loading="eager"
-    />
-    <div class="absolute inset-0" style="background: linear-gradient(180deg, var(--color-paper) 0%, transparent 40%, var(--color-paper) 100%);"></div>
-  </div>
+<section
+  id="top"
+  class="relative overflow-hidden min-h-[100svh] grid place-items-center px-6 py-20 sm:py-28 lg:py-32"
+>
+  <!-- Warmer Radial-Schein, ersetzt das frühere Background-Foto -->
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 -z-10"
+    style="background:
+      radial-gradient(60% 50% at 50% 30%, color-mix(in srgb, var(--color-accent) 8%, transparent) 0%, transparent 70%),
+      radial-gradient(80% 60% at 50% 100%, color-mix(in srgb, var(--color-accent) 6%, transparent) 0%, transparent 75%);"
+  ></div>
 
-  <div class="max-w-[1100px] w-full grid lg:grid-cols-[1.2fr_1fr] items-center gap-12">
-    <div class="reveal">
-      <p class="font-display italic text-[var(--color-accent)] text-xl mb-5" style="letter-spacing:0.02em;">
-        Autorin &amp; Malerin im Pfälzer Wald
-      </p>
-      <h1 class="font-display font-medium leading-[0.95] text-[clamp(56px,11vw,168px)]" style="letter-spacing:-0.015em;">
-        Roswitha<br/>Vogel
-      </h1>
-      <p class="mt-6 sm:mt-7 text-base sm:text-lg text-[var(--color-ink-soft)] max-w-[44ch]">
-        Krimi, Sachbuch, Autobiografie und Acrylmalerei — ein Werk, das aus zwei Stimmen entsteht und sich nie zwischen ihnen entscheidet.
-      </p>
-      <ul class="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-y-2 gap-x-3 text-xs sm:text-sm uppercase tracking-[0.18em] sm:tracking-widest text-[var(--color-muted)] list-none p-0">
-        <li>Sechs Bücher</li>
-        <li class="hidden sm:block" aria-hidden="true">·</li>
-        <li>Dreiundzwanzig Werke</li>
-        <li class="hidden sm:block" aria-hidden="true">·</li>
-        <li>Eine Heimat</li>
-      </ul>
-    </div>
-
-    <div class="reveal hidden lg:block">
-      <div class="aspect-[3/4] rounded-3xl overflow-hidden ring-1 ring-[var(--color-line)] shadow-[0_60px_120px_-50px_rgba(22,20,15,0.45)]">
+  <div
+    class="max-w-[1100px] w-full grid lg:grid-cols-[1.2fr_1fr] items-center gap-8 sm:gap-12 lg:gap-16"
+  >
+    <!-- Portrait — Mobile: oben, Desktop: rechts -->
+    <div class="reveal mx-auto lg:mx-0 w-[68%] max-w-[280px] sm:max-w-[320px] lg:max-w-none lg:order-2 lg:w-auto">
+      <div
+        class="aspect-[3/4] rounded-3xl overflow-hidden ring-1 ring-[var(--color-line)] shadow-[0_40px_80px_-30px_rgba(22,20,15,0.45)]"
+      >
         <Image
           src={portrait}
           alt="Porträt von Roswitha Vogel"
-          widths={[400, 600, 900]}
-          sizes="(min-width: 1024px) 450px, 100vw"
+          widths={[320, 480, 720, 900]}
+          sizes="(min-width: 1024px) 450px, (min-width: 640px) 320px, 68vw"
           class="w-full h-full object-cover"
           loading="eager"
         />
       </div>
     </div>
+
+    <!-- Text -->
+    <div class="reveal text-center lg:text-left lg:order-1">
+      <p
+        class="font-display italic text-[var(--color-accent)] text-base sm:text-xl mb-3 sm:mb-5"
+        style="letter-spacing:0.02em;"
+      >
+        Autorin &amp; Malerin im Pfälzer Wald
+      </p>
+      <h1
+        class="font-display font-medium leading-[0.95] text-[clamp(56px,12vw,168px)]"
+        style="letter-spacing:-0.015em;"
+      >
+        Roswitha<br/>Vogel
+      </h1>
+      <p
+        class="mt-5 sm:mt-7 text-base sm:text-lg text-[var(--color-ink-soft)] max-w-[44ch] mx-auto lg:mx-0"
+      >
+        Krimi, Sachbuch, Autobiografie und Acrylmalerei — ein Werk, das aus
+        zwei Stimmen entsteht und sich nie zwischen ihnen entscheidet.
+      </p>
+      <ul
+        class="mt-7 sm:mt-10 flex flex-wrap justify-center lg:justify-start gap-x-3 gap-y-2 text-[11px] sm:text-sm uppercase tracking-[0.22em] sm:tracking-widest text-[var(--color-muted)] list-none p-0"
+      >
+        <li>Sechs Bücher</li>
+        <li aria-hidden="true">·</li>
+        <li>Dreiundzwanzig Werke</li>
+        <li aria-hidden="true">·</li>
+        <li>Eine Heimat</li>
+      </ul>
+    </div>
   </div>
 
-  <a href="#bio" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-sm text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors" aria-label="Zur Biografie scrollen">
+  <a
+    href="#bio"
+    class="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 text-sm text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors"
+    aria-label="Zur Biografie scrollen"
+  >
     ↓ weiterlesen
   </a>
 </section>
